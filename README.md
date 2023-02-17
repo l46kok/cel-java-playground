@@ -1,13 +1,18 @@
-# cel-java-mvn
-Test repository for validating CEL-Java Maven artifact
+# cel-java-playground
 
-To run, execute these commands under `cel-test-app` directory:
+Test repository for validating CEL-Java artifact published to Maven Central
+
+To run, execute these commands under the correct directory:
+
+**cel-test-app-mvn** (Maven project):
 
 ```
-mvn comiple
+mvn compile
 mvn exec:java
+```
 
-or
+**cel-test-app-gradle** (Gradle):
 
-mvn test
+```
+gradlew run
 ```
