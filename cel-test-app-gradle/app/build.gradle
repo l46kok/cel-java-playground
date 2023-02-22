@@ -14,9 +14,9 @@ plugins {
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
-    maven {
-        url 'https://s01.oss.sonatype.org/content/repositories/snapshots'
-    }
+    // maven {
+    //     url 'https://s01.oss.sonatype.org/content/repositories/snapshots'
+    // }
 }
 
 dependencies {
@@ -26,8 +26,8 @@ dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:31.1-jre'
 
-    implementation 'dev.cel:runtime:0.1.0-SNAPSHOT'
-    implementation 'dev.cel:v1alpha1:0.1.0-SNAPSHOT'
+    implementation 'dev.cel:runtime:0.1.0'
+    implementation 'dev.cel:v1alpha1:0.1.0'
 }
 
 application {
