@@ -8,6 +8,13 @@ import dev.cel.compiler.CelCompilerFactory;
 import dev.cel.runtime.CelEvaluationException;
 import dev.cel.runtime.CelRuntime;
 import dev.cel.runtime.CelRuntimeFactory;
+import dev.cel.optimizer.CelOptimizationException;
+import dev.cel.optimizer.CelOptimizer;
+import dev.cel.optimizer.CelOptimizerFactory;
+import dev.cel.optimizer.optimizers.ConstantFoldingOptimizer;
+import dev.cel.validator.CelValidator;
+import dev.cel.validator.CelValidatorFactory;
+import dev.cel.validator.validators.TimestampLiteralValidator;
 import java.util.Map;
 
 /** Hello world! */
@@ -18,6 +25,14 @@ public class App {
       CelCompilerFactory.standardCelCompilerBuilder().addVar("my_var", SimpleType.STRING).build();
   private static final CelRuntime CEL_RUNTIME =
       CelRuntimeFactory.standardCelRuntimeBuilder().build();
+  private static final CelValidator CEL_VALIDATOR =
+      CelValidatorFactory.standardCelValidatorBuilder(CEL_COMPILER, CEL_RUNTIME)
+          .addAstValidators(TimestampLiteralValidator.INSTANCE)
+          .build();
+  private static final CelOptimizer CEL_OPTIMIZER =
+    CelOptimizerFactory.standardCelOptimizerBuilder(CEL_COMPILER, CEL_RUNTIME)
+        .addAstOptimizers(ConstantFoldingOptimizer.INSTANCE)
+        .build();
 
   public static void main(String[] args) throws Exception {
     // Compile the expression into an Abstract Syntax Tree.
@@ -29,5 +44,9 @@ public class App {
     // Evaluate the program with an input variable.
     String result = (String) program.eval(Map.of("my_var", "Hello World"));
     System.out.println(result); // 'Hello World!'
+
+    // Validate/Optimize
+    System.out.println("Validation result: " + CEL_VALIDATOR.validate(ast).hasError());
+    ast = CEL_OPTIMIZER.optimize(ast);
   }
 }
