@@ -26,7 +26,7 @@ dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:31.1-jre'
 
-    implementation 'dev.cel:cel:0.3.0-SNAPSHOT'
+    implementation 'dev.cel:cel:0.4.0-SNAPSHOT'
 }
 
 application {

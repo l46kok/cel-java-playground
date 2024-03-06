@@ -8,6 +8,7 @@ import dev.cel.compiler.CelCompilerFactory;
 import dev.cel.runtime.CelEvaluationException;
 import dev.cel.runtime.CelRuntime;
 import dev.cel.runtime.CelRuntimeFactory;
+import dev.cel.parser.CelUnparserFactory;
 import dev.cel.optimizer.CelOptimizationException;
 import dev.cel.optimizer.CelOptimizer;
 import dev.cel.optimizer.CelOptimizerFactory;
@@ -31,7 +32,7 @@ public class App {
           .build();
   private static final CelOptimizer CEL_OPTIMIZER =
     CelOptimizerFactory.standardCelOptimizerBuilder(CEL_COMPILER, CEL_RUNTIME)
-        .addAstOptimizers(ConstantFoldingOptimizer.INSTANCE)
+        .addAstOptimizers(ConstantFoldingOptimizer.getInstance())
         .build();
 
   public static void main(String[] args) throws Exception {
@@ -48,5 +49,8 @@ public class App {
     // Validate/Optimize
     System.out.println("Validation result: " + CEL_VALIDATOR.validate(ast).hasError());
     ast = CEL_OPTIMIZER.optimize(ast);
+
+    // Unparse
+    System.out.println("Unparsed: " + CelUnparserFactory.newUnparser().unparse(ast));
   }
 }
