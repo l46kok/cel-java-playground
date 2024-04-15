@@ -5,6 +5,7 @@ import dev.cel.common.CelValidationException;
 import dev.cel.common.types.SimpleType;
 import dev.cel.compiler.CelCompiler;
 import dev.cel.compiler.CelCompilerFactory;
+import dev.cel.parser.CelUnparserFactory;
 import dev.cel.runtime.CelEvaluationException;
 import dev.cel.runtime.CelRuntime;
 import dev.cel.runtime.CelRuntimeFactory;
@@ -28,6 +29,8 @@ public class App {
     // Evaluate the program with an input variable.
     String result = (String) program.eval(Map.of("my_var", "Hello World"));
     System.out.println(result); // 'Hello World!'
-  }
 
+    // Unparse
+    System.out.println("Unparsed: " + CelUnparserFactory.newUnparser().unparse(ast));
+  }
 }
