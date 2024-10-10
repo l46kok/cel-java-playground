@@ -11,9 +11,14 @@ plugins {
     id 'application'
 }
 
+java {
+    toolchain {
+            languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
+
 repositories {
     // Use Maven Central for resolving dependencies.
-    mavenLocal()
     mavenCentral()
     maven {
         url 'https://s01.oss.sonatype.org/content/repositories/snapshots'
@@ -27,7 +32,9 @@ dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:31.1-jre'
 
-    implementation 'dev.cel:cel:0.4.2'
+    implementation 'dev.cel:cel:0.8.0-SNAPSHOT'
+
+    implementation 'com.google.api.grpc:proto-google-common-protos:2.46.0'
 }
 
 application {
