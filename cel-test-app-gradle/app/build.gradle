@@ -18,6 +18,7 @@ java {
 }
 
 repositories {
+    mavenLocal()
     // Use Maven Central for resolving dependencies.
     mavenCentral()
     maven {
@@ -32,9 +33,10 @@ dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:31.1-jre'
 
-    implementation 'dev.cel:cel:0.8.0-SNAPSHOT'
+    implementation 'dev.cel:runtime:0.9.1-local'
+    implementation 'dev.cel:protobuf:0.9.1-local'
 
-    implementation 'com.google.api.grpc:proto-google-common-protos:2.46.0'
+//    implementation 'com.google.api.grpc:proto-google-common-protos:2.46.0'
 }
 
 application {
