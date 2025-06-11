@@ -1,56 +1,45 @@
 package dev.cel.testapp;
 
+import dev.cel.common.types.CelTypes;
 import dev.cel.common.CelAbstractSyntaxTree;
-import dev.cel.common.CelValidationException;
-import dev.cel.common.types.SimpleType;
-import dev.cel.compiler.CelCompiler;
-import dev.cel.compiler.CelCompilerFactory;
-import dev.cel.runtime.CelEvaluationException;
-import dev.cel.runtime.CelRuntime;
-import dev.cel.runtime.CelRuntimeFactory;
-import dev.cel.parser.CelUnparserFactory;
-import dev.cel.optimizer.CelOptimizationException;
-import dev.cel.optimizer.CelOptimizer;
-import dev.cel.optimizer.CelOptimizerFactory;
-import dev.cel.optimizer.optimizers.ConstantFoldingOptimizer;
-import dev.cel.validator.CelValidator;
-import dev.cel.validator.CelValidatorFactory;
-import dev.cel.validator.validators.TimestampLiteralValidator;
+import dev.cel.common.CelProtoAbstractSyntaxTree;
+import dev.cel.expr.CheckedExpr;
+import dev.cel.expr.Constant;
+import dev.cel.expr.Expr;
+import dev.cel.runtime.CelLiteRuntime;
+import dev.cel.runtime.CelLiteRuntimeFactory;
+import dev.cel.runtime.CelStandardFunctions;
 import java.util.Map;
 
 /** Hello world! */
 public class App {
-  // Construct the compilation and runtime environments.
-  // These instances are immutable and thus trivially thread-safe and amenable to caching.
-  private static final CelCompiler CEL_COMPILER =
-      CelCompilerFactory.standardCelCompilerBuilder().addVar("my_var", SimpleType.STRING).build();
-  private static final CelRuntime CEL_RUNTIME =
-      CelRuntimeFactory.standardCelRuntimeBuilder().build();
-  private static final CelValidator CEL_VALIDATOR =
-      CelValidatorFactory.standardCelValidatorBuilder(CEL_COMPILER, CEL_RUNTIME)
-          .addAstValidators(TimestampLiteralValidator.INSTANCE)
-          .build();
-  private static final CelOptimizer CEL_OPTIMIZER =
-    CelOptimizerFactory.standardCelOptimizerBuilder(CEL_COMPILER, CEL_RUNTIME)
-        .addAstOptimizers(ConstantFoldingOptimizer.getInstance())
-        .build();
+
+  private static final CelLiteRuntime CEL_RUNTIME = CelLiteRuntimeFactory.newLiteRuntimeBuilder()
+      .setStandardFunctions(CelStandardFunctions.ALL_STANDARD_FUNCTIONS)
+      .build();
 
   public static void main(String[] args) throws Exception {
-    // Compile the expression into an Abstract Syntax Tree.
-    CelAbstractSyntaxTree ast = CEL_COMPILER.compile("my_var + '!'").getAst();
+    // Manually constructed checkedExpr.
+    // In the real world, this should be produced by a compiler (go, cpp or in Java)
+    CheckedExpr checkedExpr = CheckedExpr.newBuilder()
+        .putTypeMap(1, dev.cel.expr.Type.newBuilder().setPrimitive(dev.cel.expr.Type.PrimitiveType.STRING).build())
+        .setExpr(
+            Expr.newBuilder()
+                .setConstExpr(Constant.newBuilder().setStringValue("Hello world!").build())
+                .setId(1)
+                .build())
+        .setSourceInfo(
+            dev.cel.expr.SourceInfo.newBuilder()
+                .setLocation("<input>")
+                .addLineOffsets(15)
+                .putPositions(1, 0)
+                .build())
+        .build();
 
-    // Plan an executable program instance.
-    CelRuntime.Program program = CEL_RUNTIME.createProgram(ast);
+    CelAbstractSyntaxTree ast = CelProtoAbstractSyntaxTree.fromCheckedExpr(checkedExpr).getAst();
 
-    // Evaluate the program with an input variable.
-    String result = (String) program.eval(Map.of("my_var", "Hello World"));
-    System.out.println(result); // 'Hello World!'
+    Object result = CEL_RUNTIME.createProgram(ast).eval();
 
-    // Validate/Optimize
-    System.out.println("Validation result: " + CEL_VALIDATOR.validate(ast).hasError());
-    ast = CEL_OPTIMIZER.optimize(ast);
-
-    // Unparse
-    System.out.println("Unparsed: " + CelUnparserFactory.newUnparser().unparse(ast));
+    System.out.println(result);
   }
 }

@@ -44,8 +44,8 @@
     </dependency>
     <dependency>
       <groupId>dev.cel</groupId>
-      <artifactId>cel</artifactId>
-      <version>0.8.0-SNAPSHOT</version>
+      <artifactId>runtime-android</artifactId>
+      <version>0.10.0-2-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
