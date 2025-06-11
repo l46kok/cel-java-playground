@@ -32,9 +32,7 @@ dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:31.1-jre'
 
-    implementation 'dev.cel:cel:0.8.0-SNAPSHOT'
-
-    implementation 'com.google.api.grpc:proto-google-common-protos:2.46.0'
+    implementation 'dev.cel:cel:0.10.0-2-SNAPSHOT'
 }
 
 application {
